@@ -3,6 +3,7 @@ import { Stack, useRouter } from "expo-router";
 import { useTheme } from "@/hooks/useTheme";
 import { AuthContext } from "@/context/AuthContext";
 import { useContext, useEffect } from "react";
+import AccountButton from "@/components/AccountButton";
 
 function LayoutContent() {
   const theme = useTheme();
@@ -18,6 +19,9 @@ function LayoutContent() {
     return null; // TODO: Add loading screen
   }
 
+  const headerAccountRight = () => (
+    <AccountButton onPress={() => router.navigate("/account")} />
+  );
 
   return (
     <Stack
@@ -26,8 +30,12 @@ function LayoutContent() {
         headerTintColor: theme.text
       }}
     >
-      <Stack.Screen name="index" options={{ headerTitle: "I-Ate" }} />
+      <Stack.Screen name="index" options={{
+        headerTitle: "I-Ate",
+        headerRight: headerAccountRight
+      }} />
       <Stack.Screen name="addFoodItem" />
+      <Stack.Screen name="account" />
     </Stack>
   );
 }
