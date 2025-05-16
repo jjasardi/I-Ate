@@ -1,13 +1,15 @@
 import { supabase } from "@/lib/supabase";
-import React, { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Button, StyleSheet, Text, View, TextInput } from "react-native";
 import { useTheme } from "@/hooks/useTheme";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
+import { AuthContext } from "@/context/AuthContext";
 
 const SignIn: React.FC = () => {
   const theme = useTheme();
   const router = useRouter();
+  const { user } = useContext(AuthContext);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,6 +21,12 @@ const SignIn: React.FC = () => {
       setError(error.message);
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      router.replace('/');
+    }
+  }, [user, router])
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
@@ -52,7 +60,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 16,
   },
-    input: {
+  input: {
     height: 40,
     borderWidth: 1,
     marginBottom: 12,
