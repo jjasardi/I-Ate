@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button, StyleSheet, Text, TextInput } from "react-native";
 import { useTheme } from "@/hooks/useTheme";
 import { SafeAreaView } from "react-native-safe-area-context";

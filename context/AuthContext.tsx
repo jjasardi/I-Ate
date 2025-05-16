@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState, useMemo } from "react";
 import { supabase } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
 
@@ -32,7 +32,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => subscription.unsubscribe();
   }, []);
 
-  const contextValue = React.useMemo(() => ({ user, loading }), [user, loading]);
+  const contextValue = useMemo(() => ({ user, loading }), [user, loading]);
 
   return (
     <AuthContext.Provider value={contextValue}>
