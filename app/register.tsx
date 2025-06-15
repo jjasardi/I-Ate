@@ -1,9 +1,12 @@
 import { supabase } from "@/lib/supabase";
-import { useState } from "react";
-import { Button, StyleSheet, Text, TextInput } from "react-native";
+import { useContext, useState } from "react";
+import { ActivityIndicator, Button, StyleSheet, Text, View } from "react-native";
 import { useTheme } from "@/hooks/useTheme";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
+import PasswordInput from "@/components/PasswordInput";
+import { AuthContext } from "@/context/AuthContext";
+import CustomTextInput from "@/components/CustomTextInput";
 
 const Register: React.FC = () => {
   const theme = useTheme();
@@ -13,6 +16,7 @@ const Register: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const { loading } = useContext(AuthContext)
 
   const handleRegister = async () => {
     const { error } = await supabase.auth.signUp({
@@ -28,50 +32,62 @@ const Register: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
-      <TextInput
-        style={[styles.input, { color: theme.text }]}
+    <SafeAreaView style={[styles.mainContainer, { backgroundColor: theme.background }]}>
+      <Text style={[styles.title, { color: theme.primary }]}>Register</Text>
+
+      <CustomTextInput
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
       />
-      <TextInput
-        style={[styles.input, { color: theme.text }]}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
+      <PasswordInput value={password} onChangeText={setPassword} />
       {error ? <Text style={[styles.error, { color: theme.error }]}>{error}</Text> : null}
       {success ? <Text style={[styles.success, { color: theme.primary }]}>{success}</Text> : null}
-      <Button color={theme.primary} title="Register" onPress={handleRegister} />
-      <Button
-        color={theme.secondary}
-        title="Back to Sign In"
-        onPress={() => router.replace("/signIn")}
-      />
+      <View style={styles.buttonContainer}>
+        <Button color={theme.primary} title={loading ? "Registering..." : "Register"} onPress={handleRegister} disabled={!email || !password || loading} />
+        {loading && <ActivityIndicator color={theme.primary} style={{ marginTop: 12 }} />}
+      </View>
+      <View style={styles.registerContainer}>
+        <Text style={[styles.text, { color: theme.text }]}>Already have an account?</Text>
+        <Button color={theme.secondary} title="Back to Sign In" onPress={() => router.replace("/signIn")} />
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  mainContainer: {
     flex: 1,
     justifyContent: "center",
-    padding: 16,
+    padding: 24,
   },
-  input: {
-    height: 40,
-    borderWidth: 1,
-    marginBottom: 12,
-    paddingHorizontal: 8,
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    marginBottom: 32,
+    alignSelf: "center",
   },
   error: {
-    marginBottom: 12,
+    marginBottom: 16,
+    textAlign: "center",
+    fontWeight: "bold",
   },
   success: {
-    marginBottom: 12,
+    marginBottom: 16,
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  buttonContainer: {
+    marginBottom: 24,
+  },
+  registerContainer: {
+    marginTop: 16,
+    alignItems: "center",
+  },
+  text: {
+    marginBottom: 8,
+    fontSize: 16,
   },
 });
 
